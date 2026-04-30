@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
+// Lock for mutual exclusion (protect shared variables)
+import java.util.concurrent.locks.ReentrantLock;
+
+// Semaphore to control access to CPU (limit concurrent threads)
 
 // ANSI Color Codes for enhanced terminal output
 class Colors {
@@ -36,29 +40,43 @@ class SharedResources {
     public static long totalWaitingTime = 0;       // Shared accumulator - NEEDS PROTECTION!
     public static List<String> executionLog = new ArrayList<>();  // Shared list - NEEDS PROTECTION!
     
-    // TODO #1: Add a ReentrantLock(s) here to protect critical sections
-    // Example: public static final ReentrantLock lock = new ReentrantLock();
+    // Lock to protect shared counters (prevents race conditions)
+public static final ReentrantLock counterLock = new ReentrantLock();
     
     // TODO #2: Add a Semaphore to limit concurrent process execution
     // Example: public static final Semaphore cpuSemaphore = new Semaphore(1);
     
     // Method to increment context switch counter
     public static void incrementContextSwitch() {
-        // TODO: Protect this critical section with a lock
-        // RACE CONDITION: Multiple threads might read and write simultaneously!
-        contextSwitchCount++;
+        // Acquire lock before modifying shared counter
+counterLock.lock();
+try {
+    contextSwitchCount++; // safely increment counter
+} finally {
+    counterLock.unlock(); // always release lock
+}
     }
     
     // Method to increment completed process counter
     public static void incrementCompletedProcess() {
-        // TODO: Protect this critical section with a lock
-        completedProcessCount++;
+       // Protect shared counter with lock
+counterLock.lock();
+try {
+    completedProcessCount++; // safely increment
+} finally {
+    counterLock.unlock(); // release lock
+}
     }
     
     // Method to add waiting time
     public static void addWaitingTime(long time) {
-        // TODO: Protect this critical section with a lock
-        totalWaitingTime += time;
+        // Protect shared accumulator with lock
+counterLock.lock();
+try {
+    totalWaitingTime += time; // safely update waiting time
+} finally {
+    counterLock.unlock(); // release lock
+} 
     }
     
     // Method to log execution
