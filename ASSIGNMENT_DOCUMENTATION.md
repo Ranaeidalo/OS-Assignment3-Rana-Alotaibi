@@ -2,7 +2,7 @@
 
 **Student Name**: [Rana Eid Alotaibi]  
 **Student ID**: [445052109]  
-**Date Submitted**: [5 may,2026]
+**Date Submitted**: [4 may,2026]
 
 ---
 
@@ -228,7 +228,12 @@ Ensures sequential execution and avoids conflicts.
 
 **Testing procedure**: 
 ```bash
-# Commands used (run the program at least 5 times)
+javac SchedulerSimulationSync.java
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
 ```
 
 **Results**:
